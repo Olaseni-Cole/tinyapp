@@ -58,8 +58,15 @@ app.get("/u/:id", (req, res) => {
 
 app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id];
-  res.redirect('/urls');
+  res.redirect("/urls");
 });
+
+app.post("/urls/:id", (req, res) => {
+  const templateVars = {id: req.params.id, longURL: urlDatabase[req.params.id]};
+  const longURL = req.body.longURL;
+  urlDatabase[req.params.id] = longURL;
+  res.redirect("/urls");
+})
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -68,9 +75,9 @@ app.listen(PORT, () => {
 
 const generateRandomString = () => {
   let result = "";
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const alphanumericCcharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for (let i = 0; i < 6; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
+    result += alphanumericCcharacters.charAt(Math.floor(Math.random() * alphanumericCcharacters.length));
   }
   return result;
 };

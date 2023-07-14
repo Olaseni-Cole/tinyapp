@@ -13,19 +13,19 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
+      <div class="navbar-nav mr-auto">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
-    </div>
-    <% if (user) {%>
-      <div class="navbar-nav ml-auto">
-        <span class="navbar-text ml mr-sm-2" >
-          Logged in as <%= user.email %>!
-        </span>
-        <form class="form-inline" method="post" action="/logout">
-          <button type="submit" class="btn btn-success">Logout</button>
-        </form>
+      <% if (user) {%>
+        <div class="navbar-nav ml-auto">
+          <span class="navbar-text ml mr-sm-2" >
+            Logged in as <%= user.email %>!
+          </span>
+          <form class="form-inline" method="post" action="/logout">
+            <button type="submit" class="btn btn-success">Logout</button>
+          </form>
+        </div>
         <% } else {%>
           <div class="navbar-nav ml-auto">
             <form class="form-inline" method="post" action="/login">
@@ -34,6 +34,7 @@
             <a class="nav-item nav-link" href="/register">Register</a>
           </div>
         <% } %>
-    
+      </div>
+    </div>
   </nav>
 </header>

@@ -85,12 +85,19 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const userId = req.cookies["user_id"];
   const templateVars = {
-    username: req.cookies["username"],
-    // ... any other vars
+    urls: userUrlObj(userId),
+    user: users[userId],
   };
+
+  if (!users[userId]) {
+    return res.status(403).send(needToLog);
+  }
+
   res.render("urls_index", templateVars);
 });
+
 
 app.post("/urls/:id", (req, res) => {
   const templateVars = {id: req.params.id, longURL: urlDatabase[req.params.id]};
@@ -119,6 +126,13 @@ app.get('/login', (req, res) => {
   }
   return res.render('login', { user: '' });
 });
+
+// LOGOUT - POST
+app.post("/logout", (req, res) => {
+  res.clearCookie('user_id');
+  res.redirect('/login');
+});
+
 
 app.post('/logout', (req, res) => {
   req.session = null;

@@ -112,6 +112,53 @@ app.post('/login', (req, res) => {
   return res.redirect('/urls');
 });
 
+app.post('/logout', (req, res) => {
+  req.session = null;
+  return res.redirect('/login');
+});
+
+
+app.get('/register', (req, res) => {
+  const id = req.session.id;
+  const user = users[id];
+
+  if (id && user) {
+    return res.redirect('/urls');
+  }
+  return res.render('register', { user });
+});
+
+// this endpoint is a Registration Handler /POST /register endpoint
+app.post('/register', (req, res) => {
+  const id = generateRandomString();
+  const email = req.body.email;
+  const password = req.body.password;
+  // hash the password using bcrypt
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  // if the e-mail or password are empty strings, send back a response with the 400 status code
+  if (!email || !password) {
+    return res.status(400).render('You must provide a username and password');
+  }
+  // new user object to be added in the global users object
+  const user = {
+    id,
+    email,
+    password: hashedPassword
+  };
+
+  // if found send a response
+  const foundEmail = getUserByEmail(email);
+  if (foundEmail) {
+    return res.status(400).render('This email already exists');
+  }
+
+  users[id] = user; // add the new user object to global users object
+  // set a user_id cookie containing the user's newly generated ID
+  console.log(user);
+  req.session.id = user.id;
+  return res.redirect('/urls');
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

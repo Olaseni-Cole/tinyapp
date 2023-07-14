@@ -10,6 +10,29 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  abcdef: {
+    id: "abcdef",
+    email: "user1@example.com",
+    password: "1234"
+  },
+  defghi: {
+    id: "defghi",
+    email: "user2@example.com",
+    password: "5678"
+  },
+};
+
+const getUserByEmail = (email) => {
+  for (const u in users) {
+    const existingUser = users[u];
+    if (existingUser.email === email) {
+      return existingUser;
+    }
+  }
+  return null;
+};
+
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
@@ -61,12 +84,34 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
+app.get("/urls", (req, res) => {
+  const templateVars = {
+    username: req.cookies["username"],
+    // ... any other vars
+  };
+  res.render("urls_index", templateVars);
+});
+
 app.post("/urls/:id", (req, res) => {
   const templateVars = {id: req.params.id, longURL: urlDatabase[req.params.id]};
   const longURL = req.body.longURL;
   urlDatabase[req.params.id] = longURL;
   res.redirect("/urls");
 })
+
+// POST login 
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  const user = getUserByEmail(email);
+  if (!user || user.password !== password) {
+    return res.status(403).send('Invalid email or password!');
+  }
+  res.cookie('id', user.id);
+  return res.redirect('/urls');
+});
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

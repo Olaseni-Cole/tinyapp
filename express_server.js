@@ -112,6 +112,14 @@ app.post('/login', (req, res) => {
   return res.redirect('/urls');
 });
 
+app.get('/login', (req, res) => {
+  const id = req.session.id;
+  if (id && users[id]) {
+    return res.redirect('/urls');
+  }
+  return res.render('login', { user: '' });
+});
+
 app.post('/logout', (req, res) => {
   req.session = null;
   return res.redirect('/login');
